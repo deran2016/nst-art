@@ -11,6 +11,8 @@
     "@tensorflow/tfjs": "^3.7.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "firebase-tools": "^9.14.0",
+    "global": "^4.4.0",
     "vue": "^2.6.11",
     "vue-router": "^3.5.2",
     "vue-select-image": "^1.9.0",
