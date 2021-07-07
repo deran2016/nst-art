@@ -1,11 +1,199 @@
 <template>
   <v-card
-    class="elevation-12"
+    class="mx-auto"
+    max-width="1024"
+    outlined
   >
-    <vue-select-image
-      :data-images="dataImages"
-      @onselectimage="onSelectImage"
-    />
+    <v-dialog
+      v-model="dialog"
+      width="500"
+    >
+      <v-card>
+        <v-card-text>
+          <div class="text-center py-8">
+            <v-btn
+              rounded
+              color="pink"
+              class="ma-2 white--text"
+            >
+              Upload
+              <v-icon
+                right
+                dark
+              >
+                mdi-cloud-upload
+              </v-icon>
+            </v-btn>
+            <v-file-input
+              v-model="file"
+              accept="image/png, image/jpeg, image/bmp"
+              label="사진 업로드"
+              prepend-icon="mdi-camera"
+              show-size
+              @change="onSelectFile"
+            />
+          </div>
+          <div class="px-2 py-6 body-1">
+            <p>업로드 버튼을 눌러 선택한 스타일 이미지를 적용할 사진을 업로드해주세요</p>
+            <p>#업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제합니다.</p>
+          </div>
+        </v-card-text>
+
+        <v-divider />
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            text
+            @click="dialog = false"
+          >
+            닫기
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="dialog2"
+      width="500"
+    >
+      <v-card>
+        <v-card-text>
+          <div class="px-8 py-6 mb-2 text-center title">
+            완성!
+          </div>
+          <div class="px-2 py-6 body-1">
+            <p>스타일 트랜스퍼가 완료되었습니다.<br />아래 질문에 대한 선택을 완료하면 다음 버튼이 활성화됩니다.</p>
+          </div>
+          <div class="px-2 py-6 body-1">
+            1. 사진에 스타일이 잘 어울린다
+            <v-radio-group
+              row
+            >
+              <v-radio value="1" />
+              <v-radio value="2" />
+              <v-radio value="3" />
+              <v-radio value="4" />
+              <v-radio value="5" />
+            </v-radio-group>
+            2. 화풍이 잘 반영된 것 같다
+            <v-radio-group
+              row
+            >
+              <v-radio value="1" />
+              <v-radio value="2" />
+              <v-radio value="3" />
+              <v-radio value="4" />
+              <v-radio value="5" />
+            </v-radio-group>
+          </div>
+        </v-card-text>
+
+        <v-divider />
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            text
+            @click="dialog2 = false"
+          >
+            다음
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-card-text>
+      <div class="px-8 mb-5 title">
+        1. 스타일
+      </div>
+
+      <div class="text-center body-1">
+        <vue-select-image
+          :data-images="styleImgs"
+          :h="'200'"
+          @onselectimage="onSelectImage"
+        />
+      </div>
+
+      <v-divider />
+
+      <div class="px-8 py-2 mb-5 title">
+        2. 사진 선택
+        <v-btn
+          rounded
+          color="pink"
+          class="ma-2 white--text"
+          @click="dialog = true"
+        >
+          Upload
+          <v-icon
+            right
+            dark
+          >
+            mdi-cloud-upload
+          </v-icon>
+        </v-btn>
+      </div>
+
+      <div class="px-8 py-2 body-1">
+        <img
+          id="content"
+          :aspect-ratio="16/9"
+          :height="200"
+          :src="contentSrc"
+          @load="onloadContentImg"
+        />
+      </div>
+    </v-card-text>
+
+    <v-card-actions>
+      <v-btn
+        rounded
+        outlined
+        block
+        color="primary"
+        :disabled="!enableStylize"
+        @click="startStyling"
+      >
+        Stylize
+      </v-btn>
+    </v-card-actions>
+
+    <v-card-text>
+      <v-divider />
+      <div class="px-8 py-2 mb-5 title">
+        3. 완성
+      </div>
+      <div class="px-8 py-2 body-1">
+        <canvas id="stylized"></canvas>
+      </div>
+    </v-card-text>
+
+    <v-card-actions>
+      <v-btn
+        block
+        color="primary"
+        :disabled="disabled"
+        @click="submit"
+      >
+        다음 {{ countDown > 0 ? `(${countDown})` : '' }}
+      </v-btn>
+    </v-card-actions>
+
+    <v-overlay
+      :value="overlay"
+    >
+      <v-btn
+        color="success"
+        @click="overlay = false"
+      >
+        X
+      </v-btn>
+      <p>test</p>
+    </v-overlay>
   </v-card>
 </template>
 
@@ -16,6 +204,7 @@ import * as tf from '@tensorflow/tfjs';
 import VueSelectImage from 'vue-select-image';
 import { mapMutations } from 'vuex';
 
+tf.ENV.set('WEBGL_PACK', false);
 require('vue-select-image/dist/vue-select-image.css');
 
 export default {
@@ -26,20 +215,39 @@ export default {
   },
 
   data: () => ({
-    styleNet: {},
-    transformNet: {},
-    dataImages: [{
-      id: '1',
+    countDown: 7,
+    overlay: true,
+    dialog: false,
+    dialog2: false,
+    styleNet: null,
+    transformNet: null,
+    styleImg: null,
+    contentImg: null,
+    contentSrc: '',
+    file: {},
+    styleImgs: [{
+      id: 'beach',
       src: require('../assets/img/beach.jpg'),
-      alt: '1',
+      alt: 'beach.jpg',
     }, {
-      id: '2',
-      src: require('../assets/img/stata.jpg'),
-      alt: '2',
+      id: 'stata',
+      src: require('../assets/img/seaport.jpg'),
+      alt: 'stata.jpg',
     }],
   }),
 
+  computed: {
+    enableStylize() {
+      return this.styleImg !== null
+        && this.contentImg !== null;
+    },
+    disabled() {
+      return this.countDown > 0;
+    },
+  },
+
   mounted() {
+    this.countDownTimer();
     Promise.all([
       this.loadInceptionStyleModel(),
       this.loadOriginalTransformerModel(),
@@ -80,13 +288,46 @@ export default {
         tf.browser.fromPixels(this.contentImg).toFloat().div(tf.scalar(255)).expandDims(),
         bottleneck,
       ]).squeeze());
-      await tf.browser.toPixels(stylized, this.stylized);
+      await tf.browser.toPixels(stylized, this.$el.querySelector('#stylized'));
       bottleneck.dispose();
       stylized.dispose();
+      this.dialog2 = true;
     },
 
-    onSelectImage(id) {
-      console.log(id);
+    onSelectImage(img) {
+      this.styleImg = this.$el.querySelector(`#${img.id}`);
+    },
+
+    onSelectFile(file) {
+      if (file) {
+        this.file = file;
+        this.setImage();
+      }
+    },
+
+    setImage() {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(this.file);
+      fileReader.onload = () => {
+        this.contentSrc = fileReader.result;
+      };
+    },
+
+    onloadContentImg() {
+      this.contentImg = this.$el.querySelector('#content');
+    },
+
+    submit() {
+      this.$router.push({ name: 'Artist' });
+    },
+
+    countDownTimer() {
+      if (this.countDown > 0) {
+        setTimeout(() => {
+          this.countDown -= 1;
+          this.countDownTimer();
+        }, 1000);
+      }
     },
   },
 };

@@ -14,12 +14,42 @@ const routes = [
   {
     path: '/:preset/',
     name: 'Intro',
-    component: () => import('../views/Intro.vue'),
+    component: () => import('../views/Terms.vue'),
+  },
+  {
+    path: '/:preset/explanation',
+    name: 'Explanation',
+    component: () => import('../views/Explanation.vue'),
+  },
+  {
+    path: '/:preset/gallary',
+    name: 'Gallary',
+    component: () => import('../views/Gallary.vue'),
+  },
+  {
+    path: '/:preset/video',
+    name: 'VideoExplanation',
+    component: () => import('../views/VideoExplanation.vue'),
   },
   {
     path: '/:preset/st',
     name: 'StyleTransfer',
     component: () => import('../views/StyleTransfer.vue'),
+  },
+  {
+    path: '/:preset/artist',
+    name: 'Artist',
+    component: () => import('../views/Artist.vue'),
+  },
+  {
+    path: '/:preset/art',
+    name: 'Art',
+    component: () => import('../views/Art.vue'),
+  },
+  {
+    path: '/:preset/survey',
+    name: 'Survey',
+    component: () => import('../views/Survey.vue'),
   },
   {
     path: '/:preset/submit',
