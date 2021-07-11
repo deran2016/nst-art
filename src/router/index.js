@@ -72,39 +72,18 @@ router.beforeEach((to, from, next) => {
 
     switch (preset) {
       case '1':
-        console.log('남_원어민');
-        store.state.data.experimentType = '원어민';
-        store.state.data.participantSex = '남';
+        console.log('Type 1');
+        store.state.data.experimentType = '1';
         next();
         break;
       case '2':
-        console.log('여_원어민');
-        store.state.data.experimentType = '원어민';
-        store.state.data.participantSex = '여';
+        console.log('Type 2');
+        store.state.data.experimentType = '2';
         next();
         break;
       case '3':
-        console.log('남_내목소리');
-        store.state.data.experimentType = '내목소리';
-        store.state.data.participantSex = '남';
-        next();
-        break;
-      case '4':
-        console.log('여_내목소리');
-        store.state.data.experimentType = '내목소리';
-        store.state.data.participantSex = '여';
-        next();
-        break;
-      case '5':
-        console.log('남_다른사람');
-        store.state.data.experimentType = '다른사람';
-        store.state.data.participantSex = '남';
-        next();
-        break;
-      case '6':
-        console.log('여_다른사람');
-        store.state.data.experimentType = '다른사람';
-        store.state.data.participantSex = '여';
+        console.log('Type 3');
+        store.state.data.experimentType = '3';
         next();
         break;
       default:

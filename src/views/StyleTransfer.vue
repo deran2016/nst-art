@@ -58,12 +58,16 @@
       v-model="dialog2"
       width="500"
     >
-      <v-card>
+      <v-card v-show="dialog2">
         <v-card-text>
           <div class="px-8 py-6 mb-2 text-center title">
             완성!
           </div>
-          <canvas id="stylized2"></canvas>
+          <canvas
+            id="complete"
+            ref="complete"
+          >
+          </canvas>
           <div class="px-2 py-6 body-1">
             <p>스타일 트랜스퍼가 완료되었습니다.<br />아래 질문에 대한 선택을 완료하면 다음 버튼이 활성화됩니다.</p>
           </div>
@@ -167,7 +171,12 @@
         3. 완성
       </div>
       <div class="px-8 py-2 body-1">
-        <canvas id="stylized"></canvas>
+        <canvas
+          v-for="i in stylizedCount"
+          :id="`stylized${i}`"
+          :key="i"
+        >
+        </canvas>
       </div>
     </v-card-text>
 
@@ -175,10 +184,10 @@
       <v-btn
         block
         color="primary"
-        :disabled="disabled"
+        :disabled="!stylizedCount"
         @click="submit"
       >
-        다음 {{ countDown > 0 ? `(${countDown})` : '' }}
+        다음
       </v-btn>
     </v-card-actions>
 
@@ -218,12 +227,12 @@ export default {
     countDown: 7,
     overlay: true,
     dialog: false,
-    dialog2: false,
+    dialog2: true,
     styleNet: null,
     transformNet: null,
     styleImg: null,
     contentImg: null,
-    contentSrc: '',
+    stylizedCount: 0,
     file: {},
     styleImgs: [{
       id: 'beach',
@@ -279,6 +288,7 @@ export default {
     },
 
     async startStyling() {
+      this.stylizedCount += 1;
       await tf.nextFrame();
       await tf.nextFrame();
       const bottleneck = await tf.tidy(() => this.styleNet.predict(
@@ -289,10 +299,12 @@ export default {
         tf.browser.fromPixels(this.contentImg).toFloat().div(tf.scalar(255)).expandDims(),
         bottleneck,
       ]).squeeze());
-      await tf.browser.toPixels(stylized, this.$el.querySelector('#stylized'));
+      await tf.browser.toPixels(stylized, this.$el.querySelector(`#stylized${this.stylizedCount}`));
       bottleneck.dispose();
       stylized.dispose();
       this.dialog2 = true;
+      this.saveImg();
+      this.loadImg();
     },
 
     onSelectStyleImage(img) {
@@ -314,7 +326,6 @@ export default {
       const fileReader = new FileReader();
       fileReader.readAsDataURL(this.file);
       fileReader.onload = () => {
-        // this.contentSrc = fileReader.result;
         this.contentImgs.push({
           id: `contentImg${this.contentImgs.length + 1}`,
           src: fileReader.result,
@@ -323,11 +334,50 @@ export default {
       };
     },
 
+    saveImg() {
+      const canvas = this.$el.querySelector(`#stylized${this.stylizedCount}`);
+      if (canvas.getContext) {
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let strData = '';
+        for (let i = 0; i < imgData.data.length; i += 4) {
+          strData += `${imgData.data[i]}|${imgData.data[i + 1]}|${imgData.data[i + 2]}|`;
+        }
+        localStorage.setItem(`stylized${this.stylizedCount}`, strData);
+        localStorage.setItem(`stsize${this.stylizedCount}`, `${canvas.width},${canvas.height}`);
+      }
+    },
+
+    loadImg() {
+      const canvas = this.$refs.complete;
+      if (canvas.getContext) {
+        const ctx = canvas.getContext('2d');
+        if (localStorage[`stylized${this.stylizedCount}`] && localStorage[`stsize${this.stylizedCount}`]) {
+          const aData = localStorage[`stylized${this.stylizedCount}`].split('|');
+          const size = localStorage[`stsize${this.stylizedCount}`].split(',');
+          const imgData = ctx.createImageData(size[0], size[1]);
+          [canvas.width, canvas.height] = [size[0], size[1]];
+          let j = 0;
+          for (let i = 0; i < imgData.data.length; i += 4) {
+            imgData.data[i] = aData[j];
+            imgData.data[i + 1] = aData[j + 1];
+            imgData.data[i + 2] = aData[j + 2];
+            imgData.data[i + 3] = 0xFF;
+            j += 3;
+          }
+          ctx.putImageData(imgData, 0, 0);
+        }
+      }
+    },
+
     onloadContentImg() {
       this.contentImg = this.$el.querySelector('#content');
     },
 
     submit() {
+      for (let i = 1; i <= this.stylizedCount; i += 1) {
+        this.saveImg(i);
+      }
       this.$router.push({ name: 'Artist' });
     },
 
