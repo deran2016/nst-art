@@ -63,6 +63,7 @@
           <div class="px-8 py-6 mb-2 text-center title">
             완성!
           </div>
+          <canvas id="stylized2"></canvas>
           <div class="px-2 py-6 body-1">
             <p>스타일 트랜스퍼가 완료되었습니다.<br />아래 질문에 대한 선택을 완료하면 다음 버튼이 활성화됩니다.</p>
           </div>
@@ -114,7 +115,7 @@
         <vue-select-image
           :data-images="styleImgs"
           :h="'200'"
-          @onselectimage="onSelectImage"
+          @onselectimage="onSelectStyleImage"
         />
       </div>
 
@@ -138,13 +139,11 @@
         </v-btn>
       </div>
 
-      <div class="px-8 py-2 body-1">
-        <img
-          id="content"
-          :aspect-ratio="16/9"
-          :height="200"
-          :src="contentSrc"
-          @load="onloadContentImg"
+      <div class="text-center body-1">
+        <vue-select-image
+          :data-images="contentImgs"
+          :h="'200'"
+          @onselectimage="onSelectContentImage"
         />
       </div>
     </v-card-text>
@@ -185,6 +184,7 @@
 
     <v-overlay
       :value="overlay"
+      :absolute="true"
     >
       <v-btn
         color="success"
@@ -234,6 +234,7 @@ export default {
       src: require('../assets/img/seaport.jpg'),
       alt: 'stata.jpg',
     }],
+    contentImgs: [],
   }),
 
   computed: {
@@ -294,8 +295,12 @@ export default {
       this.dialog2 = true;
     },
 
-    onSelectImage(img) {
+    onSelectStyleImage(img) {
       this.styleImg = this.$el.querySelector(`#${img.id}`);
+    },
+
+    onSelectContentImage(img) {
+      this.contentImg = this.$el.querySelector(`#${img.id}`);
     },
 
     onSelectFile(file) {
@@ -309,7 +314,12 @@ export default {
       const fileReader = new FileReader();
       fileReader.readAsDataURL(this.file);
       fileReader.onload = () => {
-        this.contentSrc = fileReader.result;
+        // this.contentSrc = fileReader.result;
+        this.contentImgs.push({
+          id: `contentImg${this.contentImgs.length + 1}`,
+          src: fileReader.result,
+          alt: 'contentImg',
+        });
       };
     },
 
