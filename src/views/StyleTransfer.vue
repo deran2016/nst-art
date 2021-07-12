@@ -8,7 +8,7 @@
       v-model="dialog"
       width="500"
     >
-      <v-card>
+      <v-card v-show="dialog1">
         <v-card-text>
           <div class="text-center py-8">
             <v-btn
@@ -46,18 +46,13 @@
           <v-btn
             color="primary"
             text
-            @click="dialog = false"
+            @click="dialog = false; dialog1 = false"
           >
             닫기
           </v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
 
-    <v-dialog
-      v-model="dialog2"
-      width="500"
-    >
       <v-card v-show="dialog2">
         <v-card-text>
           <div class="px-8 py-6 mb-2 text-center title">
@@ -102,7 +97,7 @@
           <v-btn
             color="primary"
             text
-            @click="dialog2 = false"
+            @click="dialog = false; dialog2 = false"
           >
             다음
           </v-btn>
@@ -131,7 +126,7 @@
           rounded
           color="pink"
           class="ma-2 white--text"
-          @click="dialog = true"
+          @click="dialog = true; dialog1 = true"
         >
           Upload
           <v-icon
@@ -227,7 +222,8 @@ export default {
     countDown: 7,
     overlay: true,
     dialog: false,
-    dialog2: true,
+    dialog1: false,
+    dialog2: false,
     styleNet: null,
     transformNet: null,
     styleImg: null,
@@ -302,6 +298,7 @@ export default {
       await tf.browser.toPixels(stylized, this.$el.querySelector(`#stylized${this.stylizedCount}`));
       bottleneck.dispose();
       stylized.dispose();
+      this.dialog = true;
       this.dialog2 = true;
       this.saveImg();
       this.loadImg();
