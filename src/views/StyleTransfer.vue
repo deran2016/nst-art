@@ -372,9 +372,7 @@ export default {
     },
 
     submit() {
-      for (let i = 1; i <= this.stylizedCount; i += 1) {
-        this.saveImg(i);
-      }
+      this.updateFields({ stylizedCount: this.stylizedCount });
       this.$router.push({ name: 'Artist' });
     },
 
