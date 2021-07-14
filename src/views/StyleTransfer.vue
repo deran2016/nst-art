@@ -399,3 +399,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.vue-select-image__thumbnail--selected {
+    background: rgb(255, 0, 0);
+}
+</style>
