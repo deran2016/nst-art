@@ -6,7 +6,7 @@
   >
     <v-dialog
       v-model="dialog"
-      width="500"
+      max-width="800"
     >
       <v-card v-show="dialog1">
         <v-card-text>
@@ -58,17 +58,20 @@
           <div class="px-8 py-6 mb-2 text-center title">
             완성!
           </div>
-          <canvas
-            id="complete"
-            ref="complete"
-          >
-          </canvas>
+          <div class="text-center body-1">
+            <canvas
+              id="complete"
+              ref="complete"
+            >
+            </canvas>
+          </div>
           <div class="px-2 py-6 body-1">
             <p>스타일 트랜스퍼가 완료되었습니다.<br />아래 질문에 대한 선택을 완료하면 다음 버튼이 활성화됩니다.</p>
           </div>
           <div class="px-2 py-6 body-1">
             1. 사진에 스타일이 잘 어울린다
             <v-radio-group
+              v-model="selectedOption1"
               row
             >
               <v-radio value="1" />
@@ -79,6 +82,7 @@
             </v-radio-group>
             2. 화풍이 잘 반영된 것 같다
             <v-radio-group
+              v-model="selectedOption2"
               row
             >
               <v-radio value="1" />
@@ -97,6 +101,7 @@
           <v-btn
             color="primary"
             text
+            :disabled="!checkedAll"
             @click="dialog = false; dialog2 = false"
           >
             다음
@@ -224,6 +229,8 @@ export default {
     dialog: false,
     dialog1: false,
     dialog2: false,
+    selectedOption1: null,
+    selectedOption2: null,
     styleNet: null,
     transformNet: null,
     styleImg: null,
@@ -247,6 +254,11 @@ export default {
       return this.styleImg !== null
         && this.contentImg !== null;
     },
+
+    checkedAll() {
+      return this.selectedOption1 && this.selectedOption2;
+    },
+
     disabled() {
       return this.countDown > 0;
     },
