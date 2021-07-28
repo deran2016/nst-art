@@ -86,6 +86,11 @@ router.beforeEach((to, from, next) => {
         store.state.data.experimentType = '3';
         next();
         break;
+      case '4':
+        console.log('Type 4');
+        store.state.data.experimentType = '4';
+        next();
+        break;
       default:
         console.log('wrong preset');
         next({ name: '404' });

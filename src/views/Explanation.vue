@@ -25,10 +25,10 @@
       <div class="px-8 py-5 body-1">
         <ul>
           <li>
-            앞으로 약 _분간 가상 미술관을 관람 후 학습을 위한 프로그램을 진행하게 됩니다.
+            앞으로 약 10~20 분간 가상 미술관을 관람 후 학습을 위한 프로그램을 진행하게 됩니다.
           </li>
           <li>
-            프로그램은 총 _가지 과정으로 구성되어 있으며, 안내 메시지에 따라 실험을 진행해 주세요.
+            프로그램은 총 {{ condition === '1' ? '2' : '3' }} 가지 과정으로 구성되어 있으며, 안내 메시지에 따라 실험을 진행해 주세요.
           </li>
           <li>
             자신의 기존 경험에 근거해서, 솔직하게 진행해 주시면 됩니다.
@@ -65,6 +65,9 @@ export default {
   computed: {
     disabled() {
       return this.countDown > 0;
+    },
+    condition() {
+      return this.$store.state.data.experimentType;
     },
   },
 
