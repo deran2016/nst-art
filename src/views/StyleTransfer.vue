@@ -6,6 +6,7 @@
   >
     <v-dialog
       v-model="dialog"
+      persistent
       max-width="800"
     >
       <v-card v-show="dialog1">
@@ -102,9 +103,9 @@
             color="primary"
             text
             :disabled="!checkedAll"
-            @click="dialog = false; dialog2 = false"
+            @click="survey"
           >
-            다음
+            확인
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -118,7 +119,7 @@
       <div class="text-center body-1">
         <vue-select-image
           :data-images="styleImgs"
-          :h="'200'"
+          :h="'250'"
           @onselectimage="onSelectStyleImage"
         />
       </div>
@@ -146,7 +147,7 @@
       <div class="text-center body-1">
         <vue-select-image
           :data-images="contentImgs"
-          :h="'200'"
+          :h="'250'"
           @onselectimage="onSelectContentImage"
         />
       </div>
@@ -234,17 +235,72 @@ export default {
     styleNet: null,
     transformNet: null,
     styleImg: null,
+    styleImgId: '',
     contentImg: null,
+    contentImgId: '',
     stylizedCount: 0,
+    stylizedResult: {},
     file: {},
     styleImgs: [{
-      id: 'beach',
-      src: require('../assets/img/beach.jpg'),
-      alt: 'beach.jpg',
+      id: 'img1',
+      src: require('../assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898, 석판화(Colour lithograph).jpg'),
+      alt: 'img1',
     }, {
-      id: 'stata',
-      src: require('../assets/img/seaport.jpg'),
-      alt: 'stata.jpg',
+      id: 'img2',
+      src: require('../assets/img/2, 지스몽다(Gismonda) 석판화(Colour lithograph), 1895.jpg'),
+      alt: 'img2',
+    }, {
+      id: 'img3',
+      src: require('../assets/img/3, 토스카(La Tosca), 1899.jpg'),
+      alt: 'img3',
+    }, {
+      id: 'img4',
+      src: require('../assets/img/4, 제20회 살롱 데 상 전시회 포스터(Salon of the Hundred), 1896.jpg'),
+      alt: 'img4',
+    }, {
+      id: 'img5',
+      src: require('../assets/img/5, 사계_가을(The Seasons series_Autumn), 1896.jpg'),
+      alt: 'img5',
+    }, {
+      id: 'img6',
+      src: require('../assets/img/6, 라 플륌을 위한 일러스트_황도 십이궁(La Plume_Zodiac), 1897.jpg'),
+      alt: 'img6',
+    }, {
+      id: 'img7',
+      src: require('../assets/img/7, 일세, 트리폴리 공주를 위한 삽화, 1897.jpg'),
+      alt: 'img7',
+    }, {
+      id: 'img8',
+      src: require('../assets/img/8, 르 파테를 위한 삽화, 1899.jpg'),
+      alt: 'img8',
+    }, {
+      id: 'img10',
+      src: require('../assets/img/10, 장식 패널 앵초와 깃털을 위한 디자인( The Primrose and the Quill), 1899.png'),
+      alt: 'img10',
+    }, {
+      id: 'img11',
+      src: require('../assets/img/11, 파리 만국 박람회 오스트리아 전시관 포스터(Exposition universelle de paris), 1899.jpg'),
+      alt: 'img11',
+    }, {
+      id: 'img12',
+      src: require('../assets/img/12, 호르이체에서 열린 북동 보헤이마의 상공 예술 박람회를 위한 포스터(Hospodarska Prumyslova a umelecka Vystava Ceskeho Severovychodu v Horicich, 1903.jpg'),
+      alt: 'img12',
+    }, {
+      id: 'img13',
+      src: require('../assets/img/13, 세인트루이스 만국 박람회를 위한 홍보 포스터(art nouveau color lithograph poster showing a seated woman clasping the hand of a Native american), 1903.jpg'),
+      alt: 'img13',
+    }, {
+      id: 'img14',
+      src: require('../assets/img/14, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908, 석판화, 손으로 칠한 수채화와 과슈(Lithograph, hand-coloured in watercolour and gouache).jpg'),
+      alt: 'img14',
+    }, {
+      id: 'img15',
+      src: require('../assets/img/15, 모리비아 교사 합창단을 위한 포스터(Moravian Teachers Choir), 1911.jpg'),
+      alt: 'img15',
+    }, {
+      id: 'img16',
+      src: require('../assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926, 캔버스에 템페라, 480 x 405cm.jpg'),
+      alt: 'img16',
     }],
     contentImgs: [],
   }),
@@ -261,6 +317,10 @@ export default {
 
     disabled() {
       return this.countDown > 0;
+    },
+
+    uploadCount() {
+      return this.contentImgs.length;
     },
   },
 
@@ -318,10 +378,12 @@ export default {
 
     onSelectStyleImage(img) {
       this.styleImg = this.$el.querySelector(`#${img.id}`);
+      this.styleImgId = img.id;
     },
 
     onSelectContentImage(img) {
       this.contentImg = this.$el.querySelector(`#${img.id}`);
+      this.contentImgId = img.id;
     },
 
     onSelectFile(file) {
@@ -383,8 +445,22 @@ export default {
       this.contentImg = this.$el.querySelector('#content');
     },
 
+    survey() {
+      this.stylizedResult[`result${this.stylizedCount}`] = {
+        styleImg: this.styleImgId.slice(3),
+        contentImg: this.contentImgId.slice(10),
+        uploadCount: this.uploadCount,
+        selectedOption1: this.selectedOption1,
+        selectedOption2: this.selectedOption2,
+      };
+      this.dialog = false;
+      this.dialog2 = false;
+      this.selectedOption1 = null;
+      this.selectedOption2 = null;
+    },
+
     submit() {
-      this.updateFields({ stylizedCount: this.stylizedCount });
+      this.updateFields({ stylizedCount: this.stylizedCount, stylizedResult: this.stylizedResult });
       this.$router.push({ name: 'Artist' });
     },
 
@@ -402,6 +478,9 @@ export default {
 
 <style lang="scss">
 .vue-select-image__thumbnail--selected {
-    background: rgb(255, 0, 0);
+    background: rgb(255, 100, 100);
+}
+.vue-select-image__item {
+    margin: 3px 3px !important;
 }
 </style>

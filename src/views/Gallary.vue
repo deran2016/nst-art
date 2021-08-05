@@ -90,11 +90,7 @@ export default {
     countDown: 7,
     dialog: true,
     imgs: [
-      'beach',
-      'bricks',
-      'chicago',
-      'clouds',
-      'diana',
+      '2, 지스몽다(Gismonda) 석판화(Colour lithograph), 1895',
     ],
   }),
 
