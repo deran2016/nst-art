@@ -94,7 +94,7 @@ export default {
       alt: 'img2',
     }, {
       id: 'img3',
-      src: require('@/assets/img/3, 토스카(La Tosca), 1899.jpg'),
+      src: require('@/assets/img/3, 토스카(La Tosca), 1899.jpg'),
       alt: 'img3',
     }, {
       id: 'img4',
