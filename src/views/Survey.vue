@@ -66,7 +66,11 @@ export default {
     ]),
 
     submit() {
-      this.updateFields(this.$data);
+      if (this.existArtist && this.existArtist === 'yes') {
+        this.updateFields({ wantArtist: { exist: this.existArtist, who: this.artistName } });
+      } else {
+        this.updateFields({ wantArtist: { exist: this.existArtist, who: 'none' } });
+      }
       this.$router.push({ name: 'Submit' });
     },
   },

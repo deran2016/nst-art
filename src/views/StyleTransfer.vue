@@ -142,10 +142,19 @@
             mdi-cloud-upload
           </v-icon>
         </v-btn>
+        <v-btn
+          rounded
+          color="secondary"
+          :disabled="!contentImg"
+          @click="deleteContentImage"
+        >
+          선택한 사진 삭제
+        </v-btn>
       </div>
 
       <div class="text-center body-1">
         <vue-select-image
+          ref="contentImgs"
           :data-images="contentImgs"
           :h="'250'"
           @onselectimage="onSelectContentImage"
@@ -154,6 +163,7 @@
     </v-card-text>
 
     <v-card-actions>
+      <div></div>
       <v-btn
         rounded
         outlined
@@ -472,13 +482,25 @@ export default {
         }, 1000);
       }
     },
+
+    deleteContentImage() {
+      if (!this.contentImgId) return;
+      for (let i = 0; i < this.contentImgs.length; i += 1) {
+        if (this.contentImgs[i].id === this.contentImgId) {
+          this.contentImgs.splice(i, 1);
+          this.contentImg = null;
+          this.contentImgId = '';
+          this.$refs.contentImgs.removeFromSingleSelected();
+        }
+      }
+    },
   },
 };
 </script>
 
 <style lang="scss">
 .vue-select-image__thumbnail--selected {
-    background: rgb(255, 100, 100);
+    background: rgb(255, 0, 0);
 }
 .vue-select-image__item {
     margin: 3px 3px !important;

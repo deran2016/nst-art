@@ -16,11 +16,11 @@
           src="https://www.youtube.com/embed/B22nIUhXo4E"
           title="YouTube video player"
           frameborder="0"
-          allow="accelerometer; \
-                autoplay; \
-                clipboard-write; \
-                encrypted-media; \
-                gyroscope; \
+          allow="accelerometer;
+                autoplay;
+                clipboard-write;
+                encrypted-media;
+                gyroscope;
                 picture-in-picture"
           allowfullscreen
         >
