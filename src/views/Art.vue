@@ -86,7 +86,7 @@ export default {
     selectedImg: 'base',
     artImgs: [{
       id: 'img1',
-      src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898, 석판화(Colour lithograph).jpg'),
+      src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898, 석판화(Colour lithograph).jpg'),
       alt: 'img1',
     }, {
       id: 'img2',
