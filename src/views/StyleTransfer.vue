@@ -220,6 +220,7 @@
 <script>
 /* eslint-disable import/no-unresolved */
 /* eslint-disable global-require */
+/* eslint-disable import/no-extraneous-dependencies */
 import * as tf from '@tensorflow/tfjs';
 import VueSelectImage from 'vue-select-image';
 import { mapMutations } from 'vuex';
@@ -253,63 +254,63 @@ export default {
     file: {},
     styleImgs: [{
       id: 'img1',
-      src: require('../assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898, 석판화(Colour lithograph).jpg'),
+      src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898, 석판화(Colour lithograph).jpg'),
       alt: 'img1',
     }, {
       id: 'img2',
-      src: require('../assets/img/2, 지스몽다(Gismonda) 석판화(Colour lithograph), 1895.jpg'),
+      src: require('@/assets/img/2, 지스몽다(Gismonda) 석판화(Colour lithograph), 1895.jpg'),
       alt: 'img2',
     }, {
       id: 'img3',
-      src: require('../assets/img/3, 토스카(La Tosca), 1899.jpg'),
+      src: require('@/assets/img/3, 토스카(La Tosca), 1899.jpg'),
       alt: 'img3',
     }, {
       id: 'img4',
-      src: require('../assets/img/4, 제20회 살롱 데 상 전시회 포스터(Salon of the Hundred), 1896.jpg'),
+      src: require('@/assets/img/4, 제20회 살롱 데 상 전시회 포스터(Salon of the Hundred), 1896.jpg'),
       alt: 'img4',
     }, {
       id: 'img5',
-      src: require('../assets/img/5, 사계_가을(The Seasons series_Autumn), 1896.jpg'),
+      src: require('@/assets/img/5, 사계_가을(The Seasons series_Autumn), 1896.jpg'),
       alt: 'img5',
     }, {
       id: 'img6',
-      src: require('../assets/img/6, 라 플륌을 위한 일러스트_황도 십이궁(La Plume_Zodiac), 1897.jpg'),
+      src: require('@/assets/img/6, 라 플륌을 위한 일러스트_황도 십이궁(La Plume_Zodiac), 1897.jpg'),
       alt: 'img6',
     }, {
       id: 'img7',
-      src: require('../assets/img/7, 일세, 트리폴리 공주를 위한 삽화, 1897.jpg'),
+      src: require('@/assets/img/7, 일세, 트리폴리 공주를 위한 삽화, 1897.jpg'),
       alt: 'img7',
     }, {
       id: 'img8',
-      src: require('../assets/img/8, 르 파테를 위한 삽화, 1899.jpg'),
+      src: require('@/assets/img/8, 르 파테를 위한 삽화, 1899.jpg'),
       alt: 'img8',
     }, {
       id: 'img10',
-      src: require('../assets/img/10, 장식 패널 앵초와 깃털을 위한 디자인( The Primrose and the Quill), 1899.png'),
+      src: require('@/assets/img/10, 장식 패널 앵초와 깃털을 위한 디자인( The Primrose and the Quill), 1899.png'),
       alt: 'img10',
     }, {
       id: 'img11',
-      src: require('../assets/img/11, 파리 만국 박람회 오스트리아 전시관 포스터(Exposition universelle de paris), 1899.jpg'),
+      src: require('@/assets/img/11, 파리 만국 박람회 오스트리아 전시관 포스터(Exposition universelle de paris), 1899.jpg'),
       alt: 'img11',
     }, {
       id: 'img12',
-      src: require('../assets/img/12, 호르이체에서 열린 북동 보헤이마의 상공 예술 박람회를 위한 포스터(Hospodarska Prumyslova a umelecka Vystava Ceskeho Severovychodu v Horicich, 1903.jpg'),
+      src: require('@/assets/img/12, 호르이체에서 열린 북동 보헤이마의 상공 예술 박람회를 위한 포스터(Hospodarska Prumyslova a umelecka Vystava Ceskeho Severovychodu v Horicich, 1903.jpg'),
       alt: 'img12',
     }, {
       id: 'img13',
-      src: require('../assets/img/13, 세인트루이스 만국 박람회를 위한 홍보 포스터(art nouveau color lithograph poster showing a seated woman clasping the hand of a Native american), 1903.jpg'),
+      src: require('@/assets/img/13, 세인트루이스 만국 박람회를 위한 홍보 포스터(art nouveau color lithograph poster showing a seated woman clasping the hand of a Native american), 1903.jpg'),
       alt: 'img13',
     }, {
       id: 'img14',
-      src: require('../assets/img/14, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908, 석판화, 손으로 칠한 수채화와 과슈(Lithograph, hand-coloured in watercolour and gouache).jpg'),
+      src: require('@/assets/img/14, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908, 석판화, 손으로 칠한 수채화와 과슈(Lithograph, hand-coloured in watercolour and gouache).jpg'),
       alt: 'img14',
     }, {
       id: 'img15',
-      src: require('../assets/img/15, 모리비아 교사 합창단을 위한 포스터(Moravian Teachers Choir), 1911.jpg'),
+      src: require('@/assets/img/15, 모리비아 교사 합창단을 위한 포스터(Moravian Teachers Choir), 1911.jpg'),
       alt: 'img15',
     }, {
       id: 'img16',
-      src: require('../assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926, 캔버스에 템페라, 480 x 405cm.jpg'),
+      src: require('@/assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926, 캔버스에 템페라, 480 x 405cm.jpg'),
       alt: 'img16',
     }],
     contentImgs: [],
