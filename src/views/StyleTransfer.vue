@@ -2,218 +2,243 @@
   <v-card
     class="mx-auto"
     max-width="1024"
+    width="1010"
     outlined
   >
-    <v-dialog
-      v-model="dialog"
-      persistent
-      max-width="800"
+    <div class="py-5 text-center">
+      <v-progress-circular
+        v-if="!modelLoading"
+        :size="50"
+        color="primary"
+        indeterminate
+      />
+    </div>
+    <div
+      v-if="modelLoading"
     >
-      <v-card v-show="dialog1">
-        <v-card-text>
-          <div class="text-center py-8">
-            <v-btn
-              rounded
-              color="pink"
-              class="ma-2 white--text"
-            >
-              Upload
-              <v-icon
-                right
-                dark
+      <v-dialog
+        v-model="dialog"
+        persistent
+        max-width="800"
+      >
+        <v-card v-show="dialog1">
+          <v-card-text>
+            <div class="text-center py-8">
+              <v-btn
+                rounded
+                color="pink"
+                class="ma-2 white--text"
               >
-                mdi-cloud-upload
-              </v-icon>
+                Upload
+                <v-icon
+                  right
+                  dark
+                >
+                  mdi-cloud-upload
+                </v-icon>
+              </v-btn>
+              <v-file-input
+                v-model="file"
+                accept="image/png, image/jpeg, image/bmp"
+                label="사진 업로드"
+                prepend-icon="mdi-camera"
+                show-size
+                @change="onSelectFile"
+              />
+            </div>
+            <div class="px-2 py-6 body-1">
+              <p>업로드 버튼을 눌러 선택한 스타일 이미지를 적용할 사진을 업로드해주세요</p>
+              <p>#업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제합니다.</p>
+            </div>
+          </v-card-text>
+
+          <v-divider />
+
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              color="primary"
+              text
+              @click="dialog = false; dialog1 = false"
+            >
+              닫기
             </v-btn>
-            <v-file-input
-              v-model="file"
-              accept="image/png, image/jpeg, image/bmp"
-              label="사진 업로드"
-              prepend-icon="mdi-camera"
-              show-size
-              @change="onSelectFile"
+          </v-card-actions>
+        </v-card>
+
+        <v-card v-show="dialog2">
+          <v-card-text>
+            <div class="px-8 py-6 mb-2 text-center title">
+              완성!
+            </div>
+            <div class="text-center body-1">
+              <canvas
+                id="complete"
+                ref="complete"
+              >
+              </canvas>
+            </div>
+            <div class="px-2 py-6 body-1">
+              <p>스타일 트랜스퍼가 완료되었습니다.<br />아래 질문에 대한 선택을 완료하면 다음 버튼이 활성화됩니다.</p>
+            </div>
+            <div class="px-2 py-6 body-1">
+              1. 사진에 스타일이 잘 어울린다
+              <v-radio-group
+                v-model="selectedOption1"
+                row
+              >
+                <v-radio value="1" />
+                <v-radio value="2" />
+                <v-radio value="3" />
+                <v-radio value="4" />
+                <v-radio value="5" />
+              </v-radio-group>
+              2. 화풍이 잘 반영된 것 같다
+              <v-radio-group
+                v-model="selectedOption2"
+                row
+              >
+                <v-radio value="1" />
+                <v-radio value="2" />
+                <v-radio value="3" />
+                <v-radio value="4" />
+                <v-radio value="5" />
+              </v-radio-group>
+            </div>
+          </v-card-text>
+
+          <v-divider />
+
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              color="primary"
+              text
+              :disabled="!checkedAll"
+              @click="survey"
+            >
+              확인
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-card-text>
+        <div class="px-8 mb-5 title">
+          1. 스타일
+        </div>
+
+        <div class="text-center body-1">
+          <vue-select-image
+            :data-images="styleImgs"
+            :h="'250'"
+            @onselectimage="onSelectStyleImage"
+          />
+        </div>
+
+        <v-divider />
+
+        <div class="px-8 py-2 mb-5 title">
+          2. 사진 선택
+          <v-btn
+            rounded
+            color="pink"
+            class="ma-2 white--text"
+            @click="dialog = true; dialog1 = true"
+          >
+            Upload
+            <v-icon
+              right
+              dark
+            >
+              mdi-cloud-upload
+            </v-icon>
+          </v-btn>
+          <v-btn
+            rounded
+            color="secondary"
+            :disabled="!contentImg"
+            @click="deleteContentImage"
+          >
+            선택한 사진 삭제
+          </v-btn>
+        </div>
+
+        <div class="text-center body-1">
+          <vue-select-image
+            ref="contentImgs"
+            :data-images="contentImgs"
+            :h="'250'"
+            @onselectimage="onSelectContentImage"
+          />
+        </div>
+      </v-card-text>
+
+      <v-card-actions>
+        <div></div>
+        <v-btn
+          rounded
+          outlined
+          block
+          color="primary"
+          :disabled="!enableStylize || stylizing"
+          :loading="stylizing"
+          @click="startStyling"
+        >
+          Stylize
+          <template v-slot:loader>
+            <v-progress-circular
+              indeterminate
+              color="primary"
             />
-          </div>
-          <div class="px-2 py-6 body-1">
-            <p>업로드 버튼을 눌러 선택한 스타일 이미지를 적용할 사진을 업로드해주세요</p>
-            <p>#업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제합니다.</p>
-          </div>
-        </v-card-text>
-
-        <v-divider />
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            text
-            @click="dialog = false; dialog1 = false"
-          >
-            닫기
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-
-      <v-card v-show="dialog2">
-        <v-card-text>
-          <div class="px-8 py-6 mb-2 text-center title">
-            완성!
-          </div>
-          <div class="text-center body-1">
-            <canvas
-              id="complete"
-              ref="complete"
-            >
-            </canvas>
-          </div>
-          <div class="px-2 py-6 body-1">
-            <p>스타일 트랜스퍼가 완료되었습니다.<br />아래 질문에 대한 선택을 완료하면 다음 버튼이 활성화됩니다.</p>
-          </div>
-          <div class="px-2 py-6 body-1">
-            1. 사진에 스타일이 잘 어울린다
-            <v-radio-group
-              v-model="selectedOption1"
-              row
-            >
-              <v-radio value="1" />
-              <v-radio value="2" />
-              <v-radio value="3" />
-              <v-radio value="4" />
-              <v-radio value="5" />
-            </v-radio-group>
-            2. 화풍이 잘 반영된 것 같다
-            <v-radio-group
-              v-model="selectedOption2"
-              row
-            >
-              <v-radio value="1" />
-              <v-radio value="2" />
-              <v-radio value="3" />
-              <v-radio value="4" />
-              <v-radio value="5" />
-            </v-radio-group>
-          </div>
-        </v-card-text>
-
-        <v-divider />
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            text
-            :disabled="!checkedAll"
-            @click="survey"
-          >
-            확인
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-card-text>
-      <div class="px-8 mb-5 title">
-        1. 스타일
-      </div>
-
-      <div class="text-center body-1">
-        <vue-select-image
-          :data-images="styleImgs"
-          :h="'250'"
-          @onselectimage="onSelectStyleImage"
-        />
-      </div>
-
-      <v-divider />
-
-      <div class="px-8 py-2 mb-5 title">
-        2. 사진 선택
-        <v-btn
-          rounded
-          color="pink"
-          class="ma-2 white--text"
-          @click="dialog = true; dialog1 = true"
-        >
-          Upload
-          <v-icon
-            right
-            dark
-          >
-            mdi-cloud-upload
-          </v-icon>
+            <span>대략 15초 이내의 시간이 소요됩니다.</span>
+          </template>
         </v-btn>
+      </v-card-actions>
+
+      <v-card-text>
+        <div class="text-center body-2">
+          대략 15초 이내의 시간이 소요됩니다.
+        </div>
+        <v-divider />
+        <div class="px-8 py-2 mb-5 title">
+          3. 완성
+        </div>
+        <div class="px-8 py-2 body-1">
+          <canvas
+            v-for="i in stylizedCount"
+            :id="`stylized${i}`"
+            :key="i"
+            style="margin: 3px;"
+          >
+          </canvas>
+        </div>
+      </v-card-text>
+
+      <v-card-actions>
         <v-btn
-          rounded
-          color="secondary"
-          :disabled="!contentImg"
-          @click="deleteContentImage"
+          block
+          color="primary"
+          :disabled="!stylizedCount"
+          @click="submit"
         >
-          선택한 사진 삭제
+          다음
         </v-btn>
-      </div>
+      </v-card-actions>
 
-      <div class="text-center body-1">
-        <vue-select-image
-          ref="contentImgs"
-          :data-images="contentImgs"
-          :h="'250'"
-          @onselectimage="onSelectContentImage"
-        />
-      </div>
-    </v-card-text>
-
-    <v-card-actions>
-      <div></div>
-      <v-btn
-        rounded
-        outlined
-        block
-        color="primary"
-        :disabled="!enableStylize"
-        @click="startStyling"
+      <v-overlay
+        :value="overlay"
+        :absolute="true"
       >
-        Stylize
-      </v-btn>
-    </v-card-actions>
-
-    <v-card-text>
-      <v-divider />
-      <div class="px-8 py-2 mb-5 title">
-        3. 완성
-      </div>
-      <div class="px-8 py-2 body-1">
-        <canvas
-          v-for="i in stylizedCount"
-          :id="`stylized${i}`"
-          :key="i"
+        <v-btn
+          color="success"
+          @click="overlay = false"
         >
-        </canvas>
-      </div>
-    </v-card-text>
-
-    <v-card-actions>
-      <v-btn
-        block
-        color="primary"
-        :disabled="!stylizedCount"
-        @click="submit"
-      >
-        다음
-      </v-btn>
-    </v-card-actions>
-
-    <v-overlay
-      :value="overlay"
-      :absolute="true"
-    >
-      <v-btn
-        color="success"
-        @click="overlay = false"
-      >
-        X
-      </v-btn>
-      <p>test</p>
-    </v-overlay>
+          X
+        </v-btn>
+        <p>test</p>
+      </v-overlay>
+    </div>
   </v-card>
 </template>
 
@@ -241,6 +266,7 @@ export default {
     dialog: false,
     dialog1: false,
     dialog2: false,
+    modelLoading: false,
     selectedOption1: null,
     selectedOption2: null,
     styleNet: null,
@@ -249,6 +275,7 @@ export default {
     styleImgId: '',
     contentImg: null,
     contentImgId: '',
+    stylizing: false,
     stylizedCount: 0,
     stylizedResult: {},
     file: {},
@@ -341,6 +368,7 @@ export default {
       this.loadInceptionStyleModel(),
       this.loadOriginalTransformerModel(),
     ]).then(([styleNet, transformNet]) => {
+      this.modelLoading = true;
       console.log('Loaded styleNet');
       this.styleNet = styleNet;
       this.transformNet = transformNet;
@@ -367,6 +395,7 @@ export default {
     },
 
     async startStyling() {
+      this.stylizing = true;
       this.stylizedCount += 1;
       await tf.nextFrame();
       await tf.nextFrame();
@@ -385,6 +414,7 @@ export default {
       this.dialog2 = true;
       this.saveImg();
       this.loadImg();
+      this.stylizing = false;
     },
 
     onSelectStyleImage(img) {

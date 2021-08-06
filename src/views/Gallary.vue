@@ -2,6 +2,7 @@
   <v-card
     class="mx-auto"
     max-width="1024"
+    width="1010"
     outlined
   >
     <v-dialog
@@ -60,11 +61,11 @@
               class="fill-height"
               align="center"
               justify="center"
-              style="height: 500px;"
+              style="height: 550px;"
             >
               <v-img
                 contain
-                max-height="400"
+                max-height="510"
                 :src="img"
               />
             </v-row>

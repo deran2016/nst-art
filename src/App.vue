@@ -14,7 +14,7 @@
             sm="10"
             md="8"
             lg="6"
-            style="max-width: 800px;"
+            style="max-width: 1024px;"
           >
             <v-fade-transition mode="out-in">
               <router-view />
