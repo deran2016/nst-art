@@ -2,7 +2,6 @@
   <v-app>
     <v-main>
       <v-container
-        class="fill-height"
         fluid
       >
         <v-row
@@ -11,10 +10,10 @@
         >
           <v-col
             cols="12"
-            sm="10"
-            md="8"
-            lg="6"
-            style="max-width: 1024px;"
+            sm="12"
+            md="12"
+            lg="12"
+            style="width: 100%;"
           >
             <v-fade-transition mode="out-in">
               <router-view />

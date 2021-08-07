@@ -1,18 +1,18 @@
 <template>
   <v-card
     class="mx-auto"
-    max-width="1024"
+    max-width="750"
     outlined
   >
     <v-card-text>
       <div class="px-8 mb-2 title">
-        Alphonse Mucha (알폰스 마리아 무하)
+        알폰스 무하 (Alphonse Mucha)
       </div>
 
       <div class="py-5 body-1 text-center">
         <img
           height="250"
-          :src="require('@/assets/img/2, 지스몽다(Gismonda) 석판화(Colour lithograph), 1895.jpg')"
+          :src="require('@/assets/img/mucha.jpg')"
         />
       </div>
       <div class="px-8 py-5 body-1">

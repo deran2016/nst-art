@@ -5,13 +5,18 @@
     width="1010"
     outlined
   >
-    <div class="py-5 text-center">
+    <div
+      v-if="!modelLoading"
+      class="py-5 text-center"
+    >
       <v-progress-circular
-        v-if="!modelLoading"
         :size="50"
         color="primary"
         indeterminate
       />
+      <div class="text-center body-1">
+        Loading Models...
+      </div>
     </div>
     <div
       v-if="modelLoading"
@@ -48,7 +53,13 @@
             </div>
             <div class="px-2 py-6 body-1">
               <p>업로드 버튼을 눌러 선택한 스타일 이미지를 적용할 사진을 업로드해주세요</p>
-              <p>#업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제합니다.</p>
+              <p>
+                #업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제합니다.
+                모두 로컬(사용하시는 컴퓨터)에서 불러오기만 합니다. 명화 스타일 적용에 필요
+                한 AI연산 역시 실험 서버가 아닌 구글 코랩에서 안전하게 이루어지기 때문에 사
+                진 유출 위험이 없어 편안하게 사용하시면 됩니다.
+              </p>
+              <p>파일 선택 후 닫기를 눌러주시면 바로 업로드된 사진을 사용하실 수 있습니다.</p>
             </div>
           </v-card-text>
 
@@ -197,9 +208,6 @@
       </v-card-actions>
 
       <v-card-text>
-        <div class="text-center body-2">
-          대략 15초 이내의 시간이 소요됩니다.
-        </div>
         <v-divider />
         <div class="px-8 py-2 mb-5 title">
           3. 완성
@@ -281,11 +289,11 @@ export default {
     file: {},
     styleImgs: [{
       id: 'img1',
-      src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898, 석판화(Colour lithograph).jpg'),
+      src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898.jpg'),
       alt: 'img1',
     }, {
       id: 'img2',
-      src: require('@/assets/img/2, 지스몽다(Gismonda) 석판화(Colour lithograph), 1895.jpg'),
+      src: require('@/assets/img/2, 지스몽다(Gismonda), 1895.jpg'),
       alt: 'img2',
     }, {
       id: 'img3',
@@ -329,7 +337,7 @@ export default {
       alt: 'img13',
     }, {
       id: 'img14',
-      src: require('@/assets/img/14, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908, 석판화, 손으로 칠한 수채화와 과슈(Lithograph, hand-coloured in watercolour and gouache).jpg'),
+      src: require('@/assets/img/14, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908.jpg'),
       alt: 'img14',
     }, {
       id: 'img15',
@@ -337,7 +345,7 @@ export default {
       alt: 'img15',
     }, {
       id: 'img16',
-      src: require('@/assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926, 캔버스에 템페라, 480 x 405cm.jpg'),
+      src: require('@/assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926.jpg'),
       alt: 'img16',
     }],
     contentImgs: [],

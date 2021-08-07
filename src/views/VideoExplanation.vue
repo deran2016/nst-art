@@ -1,7 +1,7 @@
 <template>
   <v-card
     class="mx-auto"
-    max-width="1024"
+    max-width="750"
     outlined
   >
     <v-card-text>

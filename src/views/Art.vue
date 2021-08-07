@@ -1,7 +1,8 @@
 <template>
   <v-card
     class="mx-auto"
-    max-width="1100"
+    max-width="1024"
+    width="1010"
     outlined
   >
     <v-dialog
@@ -86,11 +87,11 @@ export default {
     selectedImg: 'base',
     artImgs: [{
       id: 'img1',
-      src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898, 석판화(Colour lithograph).jpg'),
+      src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898.jpg'),
       alt: 'img1',
     }, {
       id: 'img2',
-      src: require('@/assets/img/2, 지스몽다(Gismonda) 석판화(Colour lithograph), 1895.jpg'),
+      src: require('@/assets/img/2, 지스몽다(Gismonda), 1895.jpg'),
       alt: 'img2',
     }, {
       id: 'img3',
@@ -134,7 +135,7 @@ export default {
       alt: 'img13',
     }, {
       id: 'img14',
-      src: require('@/assets/img/14, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908, 석판화, 손으로 칠한 수채화와 과슈(Lithograph, hand-coloured in watercolour and gouache).jpg'),
+      src: require('@/assets/img/14, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908.jpg'),
       alt: 'img14',
     }, {
       id: 'img15',
@@ -142,7 +143,7 @@ export default {
       alt: 'img15',
     }, {
       id: 'img16',
-      src: require('@/assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926, 캔버스에 템페라, 480 x 405cm.jpg'),
+      src: require('@/assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926.jpg'),
       alt: 'img16',
     }],
     artInfo: {
