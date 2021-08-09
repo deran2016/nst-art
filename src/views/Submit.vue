@@ -9,14 +9,20 @@
         수고하셨습니다
       </div>
       <div class="px-8 py-5 body-1">
-        <canvas
-          v-for="i in stylizedCount"
-          :id="`stylized${i}`"
-          :key="i"
+        <div v-if="condition !== '1'">
+          <canvas
+            v-for="i in stylizedCount"
+            :id="`stylized${i}`"
+            :key="i"
+            style="margin: 3px;"
+          >
+          </canvas>
+        </div>
+        <div
+          v-if="condition !== '1'"
+          class="text-center"
         >
-        </canvas>
-        <div class="text-center">
-          선택 후 저장 버튼을 누르시면 원하시는 결과물을 다운로드 받을 수 있습니다.
+          저장하고 싶은 이미지를 마우스 우클릭하시고 ‘이미지를 다른 이름으로 저장’을 클릭하시면 이미지 저장이 가능합니다.
         </div>
         <br />
         <div class="text-center">
@@ -24,6 +30,9 @@
         </div>
         <div class="text-center">
           ‘설문하러 가기’ 버튼을 누르시면 설문 페이지로 연결됩니다.
+        </div>
+        <div class="text-center">
+          <b>[설문까지 완료하셔야만 실험비 지급이 가능해서 꼭 설문 완료 부탁드립니다!!.]</b>
         </div>
       </div>
     </v-card-text>
@@ -53,14 +62,20 @@ export default {
   }),
 
   computed: {
+    condition() {
+      return this.$store.state.data.experimentType;
+    },
+
     stylizedCount() {
       return this.$store.state.data.stylizedCount;
     },
   },
 
   async mounted() {
-    for (let i = 1; i <= this.stylizedCount; i += 1) {
-      this.loadImg(i);
+    if (this.condition !== '1') {
+      for (let i = 1; i <= this.stylizedCount; i += 1) {
+        this.loadImg(i);
+      }
     }
     this.submitData();
     this.countDownTimer();
@@ -115,7 +130,12 @@ export default {
     },
 
     goSurvey() {
-      const url = 'https://forms.gle/';
+      let url = '';
+      if (this.condition === '1') {
+        url = 'https://forms.gle/a4UBA7uCvuMuMyay8';
+      } else if (this.condition === '2' || this.condition === '3') {
+        url = 'https://forms.gle/qMFoztNUbAJovh417';
+      }
       window.open(url);
     },
 

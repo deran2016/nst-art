@@ -137,6 +137,10 @@ export default {
   }),
 
   computed: {
+    condition() {
+      return this.$store.state.data.experimentType;
+    },
+
     disabled() {
       return this.countDown > 0 || this.watched.filter((item) => item === true).length !== 15;
     },
@@ -153,7 +157,11 @@ export default {
 
   methods: {
     submit() {
-      this.$router.push({ name: 'VideoExplanation' });
+      if (this.condition === '1') {
+        this.$router.push({ name: 'Artist' });
+      } else if (this.condition === '2' || this.condition === '3') {
+        this.$router.push({ name: 'VideoExplanation' });
+      }
     },
 
     countDownTimer() {

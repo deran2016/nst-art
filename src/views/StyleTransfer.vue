@@ -55,9 +55,9 @@
               <p>업로드 버튼을 눌러 선택한 스타일 이미지를 적용할 사진을 업로드해주세요</p>
               <p>
                 #업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제합니다.
-                모두 로컬(사용하시는 컴퓨터)에서 불러오기만 합니다. 명화 스타일 적용에 필요
-                한 AI연산 역시 실험 서버가 아닌 구글 코랩에서 안전하게 이루어지기 때문에 사
-                진 유출 위험이 없어 편안하게 사용하시면 됩니다.
+                모두 로컬(사용하시는 컴퓨터)에서 불러오기만 합니다. 명화 스타일 적용에 필요한
+                AI연산 역시 실험 서버가 아닌 구글 코랩에서 안전하게 이루어지기 때문에 사진
+                유출 위험이 없어 편안하게 사용하시면 됩니다.
               </p>
               <p>파일 선택 후 닫기를 눌러주시면 바로 업로드된 사진을 사용하실 수 있습니다.</p>
             </div>
@@ -151,28 +151,30 @@
 
         <div class="px-8 py-2 mb-5 title">
           2. 사진 선택
-          <v-btn
-            rounded
-            color="pink"
-            class="ma-2 white--text"
-            @click="dialog = true; dialog1 = true"
-          >
-            Upload
-            <v-icon
-              right
-              dark
+          <div v-if="condition !== '2'">
+            <v-btn
+              rounded
+              color="pink"
+              class="ma-2 white--text"
+              @click="dialog = true; dialog1 = true"
             >
-              mdi-cloud-upload
-            </v-icon>
-          </v-btn>
-          <v-btn
-            rounded
-            color="secondary"
-            :disabled="!contentImg"
-            @click="deleteContentImage"
-          >
-            선택한 사진 삭제
-          </v-btn>
+              Upload
+              <v-icon
+                right
+                dark
+              >
+                mdi-cloud-upload
+              </v-icon>
+            </v-btn>
+            <v-btn
+              rounded
+              color="secondary"
+              :disabled="!contentImg"
+              @click="deleteContentImage"
+            >
+              선택한 사진 삭제
+            </v-btn>
+          </div>
         </div>
 
         <div class="text-center body-1">
@@ -349,9 +351,16 @@ export default {
       alt: 'img16',
     }],
     contentImgs: [],
+    fixedContentImgs: [
+      require('@/assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926.jpg'),
+    ],
   }),
 
   computed: {
+    condition() {
+      return this.$store.state.data.experimentType;
+    },
+
     enableStylize() {
       return this.styleImg !== null
         && this.contentImg !== null;
@@ -381,6 +390,9 @@ export default {
       this.styleNet = styleNet;
       this.transformNet = transformNet;
     });
+    if (this.condition === '2') {
+      this.initContentImage();
+    }
   },
 
   methods: {
@@ -420,8 +432,8 @@ export default {
       stylized.dispose();
       this.dialog = true;
       this.dialog2 = true;
-      this.saveImg();
-      this.loadImg();
+      await this.saveImg();
+      await this.loadImg();
       this.stylizing = false;
     },
 
@@ -490,8 +502,14 @@ export default {
       }
     },
 
-    onloadContentImg() {
-      this.contentImg = this.$el.querySelector('#content');
+    initContentImage() {
+      for (let i = 0; i < this.fixedContentImgs.length; i += 1) {
+        this.contentImgs.push({
+          id: `contentImg${this.contentImgs.length + 1}`,
+          src: this.fixedContentImgs[i],
+          alt: 'contentImg',
+        });
+      }
     },
 
     survey() {
