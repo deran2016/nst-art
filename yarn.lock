@@ -4156,6 +4156,11 @@ domhandler@^4.0.0, domhandler@^4.2.0:
   dependencies:
     domelementtype "^2.2.0"
 
+dompurify@^2.0.0:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.1.tgz#a47059ca21fd1212d3c8f71fdea6943b8bfbdf6a"
+  integrity sha512-xGWt+NHAQS+4tpgbOAI08yxW0Pr256Gu/FNE2frZVTbgrBUn8M7tz7/ktS/LZ2MHeGqz6topj0/xY+y8R5FBFw==
+
 domutils@^1.7.0:
   version "1.7.0"
   resolved "https://registry.npmjs.org/domutils/-/domutils-1.7.0.tgz"
@@ -11172,6 +11177,13 @@ vue-cli-plugin-vuetify@~2.4.1:
     semver "^7.1.2"
     shelljs "^0.8.3"
 
+vue-dompurify-html@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/vue-dompurify-html/-/vue-dompurify-html-2.3.0.tgz#b175edda57362cf7b03d2864468fa644e05a2ad0"
+  integrity sha512-Iz9wI4iiJF+rzC2x3r8quw/VXrkwgMsWXt9p0Le4wXtolBXwMDJOmK3QNMiNg36bzU2b0f3En/wjidoeRVNZ7A==
+  dependencies:
+    dompurify "^2.0.0"
+
 vue-eslint-parser@^7.0.0:
   version "7.7.2"
   resolved "https://registry.npmjs.org/vue-eslint-parser/-/vue-eslint-parser-7.7.2.tgz"
@@ -11189,6 +11201,11 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.npmjs.org/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
+
+vue-html-secure@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/vue-html-secure/-/vue-html-secure-1.0.9.tgz#284cd1ee3ef673bf931de48faacc54c90c6fe05e"
+  integrity sha512-X7rrTWLn8vvlvx3loRkBfYFO6C3z7xNDLB70wgrreI2gMVx9JBJJjxCYWgMumx6yVd81DbNOEpUuyBM4j47khg==
 
 "vue-loader-v16@npm:vue-loader@^16.1.0":
   version "16.3.0"

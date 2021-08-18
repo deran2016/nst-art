@@ -32,6 +32,7 @@
                 rounded
                 color="pink"
                 class="ma-2 white--text"
+                @click="fileupload"
               >
                 Upload
                 <v-icon
@@ -42,6 +43,8 @@
                 </v-icon>
               </v-btn>
               <v-file-input
+                id="fileinput"
+                ref="fileinput"
                 v-model="file"
                 accept="image/png, image/jpeg, image/bmp"
                 label="사진 업로드"
@@ -342,44 +345,46 @@ export default {
       alt: 'img6',
     }, {
       id: 'img7',
-      src: require('@/assets/img/7, 일세, 트리폴리 공주를 위한 삽화, 1897.jpg'),
+      src: require('@/assets/img/7, 뫼즈강의 맥주(Bieres de La Meuse), 1897.jpeg'),
       alt: 'img7',
     }, {
       id: 'img8',
-      src: require('@/assets/img/8, 르 파테를 위한 삽화, 1899.jpg'),
+      src: require('@/assets/img/8, 모나코 몬테 카를로(Monaco - Monte Carlo), 1897.jpeg'),
       alt: 'img8',
     }, {
+      id: 'img9',
+      src: require('@/assets/img/9, 장식 패널 앵초와 깃털을 위한 디자인( The Primrose and the Quill), 1899.png'),
+      alt: 'img9',
+    }, {
       id: 'img10',
-      src: require('@/assets/img/10, 장식 패널 앵초와 깃털을 위한 디자인( The Primrose and the Quill), 1899.png'),
+      src: require('@/assets/img/10, 뿌리는 향수 로도 광고 포스터 (Lanca Perfume “Rodo”), 1896.jpeg'),
       alt: 'img10',
     }, {
       id: 'img11',
-      src: require('@/assets/img/11, 파리 만국 박람회 오스트리아 전시관 포스터(Exposition universelle de paris), 1899.jpg'),
+      src: require('@/assets/img/11, 호르이체에서 열린 북동 보헤이마의 상공 예술 박람회를 위한 포스터(Hospodarska Prumyslova a umelecka Vystava Ceskeho Severovychodu v Horicich, 1903.jpg'),
       alt: 'img11',
     }, {
       id: 'img12',
-      src: require('@/assets/img/12, 호르이체에서 열린 북동 보헤이마의 상공 예술 박람회를 위한 포스터(Hospodarska Prumyslova a umelecka Vystava Ceskeho Severovychodu v Horicich, 1903.jpg'),
+      src: require('@/assets/img/12, 세인트루이스 만국 박람회를 위한 홍보 포스터(art nouveau color lithograph poster showing a seated woman clasping the hand of a Native american), 1903.jpg'),
       alt: 'img12',
     }, {
       id: 'img13',
-      src: require('@/assets/img/13, 세인트루이스 만국 박람회를 위한 홍보 포스터(art nouveau color lithograph poster showing a seated woman clasping the hand of a Native american), 1903.jpg'),
+      src: require('@/assets/img/13, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908.jpg'),
       alt: 'img13',
     }, {
       id: 'img14',
-      src: require('@/assets/img/14, 잔다르크로 분한 모드 아담(Maude Adams as Joan of Arc), 1908.jpg'),
+      src: require('@/assets/img/14, 모리비아 교사 합창단을 위한 포스터(Moravian Teachers Choir), 1911.jpg'),
       alt: 'img14',
     }, {
       id: 'img15',
-      src: require('@/assets/img/15, 모리비아 교사 합창단을 위한 포스터(Moravian Teachers Choir), 1911.jpg'),
+      src: require('@/assets/img/15, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926.jpg'),
       alt: 'img15',
-    }, {
-      id: 'img16',
-      src: require('@/assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926.jpg'),
-      alt: 'img16',
     }],
     contentImgs: [],
     fixedContentImgs: [
-      require('@/assets/img/16, 슬라브 서사시 연작 중 슬라브 민족의 역사 찬미(Epopeia Eslava - Ciclo XX), 1926.jpg'),
+      require('@/assets/img/1.jpg'),
+      require('@/assets/img/2.jpg'),
+      require('@/assets/img/3.jpeg'),
     ],
   }),
 
@@ -432,6 +437,10 @@ export default {
     ...mapMutations([
       'updateFields',
     ]),
+
+    fileupload() {
+      this.$refs.fileinput.$refs.input.click();
+    },
 
     async loadInceptionStyleModel() {
       if (!this.inceptionStyleNet) {
