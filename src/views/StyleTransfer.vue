@@ -1,8 +1,7 @@
 <template>
   <v-card
     class="mx-auto"
-    max-width="1024"
-    width="1010"
+    width="100%"
     outlined
   >
     <div
@@ -53,13 +52,14 @@
             </div>
             <div class="px-2 py-6 body-1">
               <p>업로드 버튼을 눌러 선택한 스타일 이미지를 적용할 사진을 업로드해주세요</p>
+              <p><b>사진을 3장 업로드해야 진행이 가능합니다.</b></p>
               <p>
                 #업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제합니다.
                 모두 로컬(사용하시는 컴퓨터)에서 불러오기만 합니다. 명화 스타일 적용에 필요한
                 AI연산 역시 실험 서버가 아닌 구글 코랩에서 안전하게 이루어지기 때문에 사진
                 유출 위험이 없어 편안하게 사용하시면 됩니다.
               </p>
-              <p>파일 선택 후 닫기를 눌러주시면 바로 업로드된 사진을 사용하실 수 있습니다.</p>
+              <p>업로드를 동일한 방법으로 3회 진행하신 뒤 닫기를 눌러주시면 바로 바로 업로드된 사진을 사용하실 수 있습니다.</p>
             </div>
           </v-card-text>
 
@@ -83,17 +83,29 @@
               완성!
             </div>
             <div class="text-center body-1">
+              <img
+                :src="getSrc"
+                height="290"
+                style="margin-right: 30px"
+              />
               <canvas
                 id="complete"
                 ref="complete"
               >
               </canvas>
             </div>
-            <div class="px-2 py-6 body-1">
-              <p>스타일 트랜스퍼가 완료되었습니다.<br />아래 질문에 대한 선택을 완료하면 다음 버튼이 활성화됩니다.</p>
+            <div class="mx-16 px-16 py-6 body-1 text-center">
+              <p>
+                명화 스타일 옮기기가 완료되었습니다.<br />
+                완성된 결과물과 작품을 비교해 보면서 아래 질문에 대해 답변해주세요.<br /><br />
+                (1: 전혀 아니다 ~ 7: 매우 그렇다)
+              </p>
             </div>
-            <div class="px-2 py-6 body-1">
-              1. 사진에 스타일이 잘 어울린다
+            <div class="mx-16 px-16 body-1">
+              1. 해당 명화의 스타일이 주는 느낌이 결과물에도 잘 나타나있다고 생각한다.
+              <p class="radio-label">
+                1234567
+              </p>
               <v-radio-group
                 v-model="selectedOption1"
                 row
@@ -103,8 +115,13 @@
                 <v-radio value="3" />
                 <v-radio value="4" />
                 <v-radio value="5" />
+                <v-radio value="6" />
+                <v-radio value="7" />
               </v-radio-group>
-              2. 화풍이 잘 반영된 것 같다
+              2. 완성된 결과물이 내 마음에 든다.
+              <p class="radio-label">
+                1234567
+              </p>
               <v-radio-group
                 v-model="selectedOption2"
                 row
@@ -114,6 +131,8 @@
                 <v-radio value="3" />
                 <v-radio value="4" />
                 <v-radio value="5" />
+                <v-radio value="6" />
+                <v-radio value="7" />
               </v-radio-group>
             </div>
           </v-card-text>
@@ -136,22 +155,11 @@
 
       <v-card-text>
         <div class="px-8 mb-5 title">
-          1. 스타일
-        </div>
-
-        <div class="text-center body-1">
-          <vue-select-image
-            :data-images="styleImgs"
-            :h="'250'"
-            @onselectimage="onSelectStyleImage"
-          />
-        </div>
-
-        <v-divider />
-
-        <div class="px-8 py-2 mb-5 title">
-          2. 사진 선택
-          <div v-if="condition !== '2'">
+          1. 사진 선택
+          <div
+            v-if="condition !== '2'"
+            style="display: inline"
+          >
             <v-btn
               rounded
               color="pink"
@@ -166,6 +174,7 @@
                 mdi-cloud-upload
               </v-icon>
             </v-btn>
+            <!--
             <v-btn
               rounded
               color="secondary"
@@ -174,6 +183,7 @@
             >
               선택한 사진 삭제
             </v-btn>
+            -->
           </div>
         </div>
 
@@ -181,8 +191,22 @@
           <vue-select-image
             ref="contentImgs"
             :data-images="contentImgs"
-            :h="'250'"
+            :h="'290'"
             @onselectimage="onSelectContentImage"
+          />
+        </div>
+
+        <v-divider />
+
+        <div class="px-8 py-2 mb-5 title">
+          2. 명화 선택
+        </div>
+
+        <div class="text-center body-1">
+          <vue-select-image
+            :data-images="styleImgs"
+            :h="'290'"
+            @onselectimage="onSelectStyleImage"
           />
         </div>
       </v-card-text>
@@ -194,7 +218,7 @@
           outlined
           block
           color="primary"
-          :disabled="!enableStylize || stylizing"
+          :disabled="!enableStylize || stylizing || contentImgs.length < 3"
           :loading="stylizing"
           @click="startStyling"
         >
@@ -288,7 +312,10 @@ export default {
     stylizing: false,
     stylizedCount: 0,
     stylizedResult: {},
+    stylizedObjects: {},
     file: {},
+    filesystem: null,
+    filewriter: null,
     styleImgs: [{
       id: 'img1',
       src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898.jpg'),
@@ -377,15 +404,21 @@ export default {
     uploadCount() {
       return this.contentImgs.length;
     },
+
+    getSrc() {
+      return this.styleImgs[this.getKeyByValue(this.styleImgs, this.styleImgId)] ? this.styleImgs[this.getKeyByValue(this.styleImgs, this.styleImgId)].src : '';
+    },
   },
 
   mounted() {
+    this.getLocalFile();
     this.countDownTimer();
     Promise.all([
       this.loadInceptionStyleModel(),
       this.loadOriginalTransformerModel(),
     ]).then(([styleNet, transformNet]) => {
       this.modelLoading = true;
+      this.preload();
       console.log('Loaded styleNet');
       this.styleNet = styleNet;
       this.transformNet = transformNet;
@@ -475,8 +508,11 @@ export default {
         for (let i = 0; i < imgData.data.length; i += 4) {
           strData += `${imgData.data[i]}|${imgData.data[i + 1]}|${imgData.data[i + 2]}|`;
         }
-        localStorage.setItem(`stylized${this.stylizedCount}`, strData);
-        localStorage.setItem(`stsize${this.stylizedCount}`, `${canvas.width},${canvas.height}`);
+        // localStorage.setItem(`stylized${this.stylizedCount}`, strData);
+        // localStorage.setItem(`stsize${this.stylizedCount}`, `${canvas.width},${canvas.height}`);
+        this.stylizedObjects[`stylized${this.stylizedCount}`] = strData;
+        this.stylizedObjects[`stsize${this.stylizedCount}`] = `${canvas.width},${canvas.height}`;
+        console.log(this.stylizedObjects);
       }
     },
 
@@ -484,9 +520,9 @@ export default {
       const canvas = this.$refs.complete;
       if (canvas.getContext) {
         const ctx = canvas.getContext('2d');
-        if (localStorage[`stylized${this.stylizedCount}`] && localStorage[`stsize${this.stylizedCount}`]) {
-          const aData = localStorage[`stylized${this.stylizedCount}`].split('|');
-          const size = localStorage[`stsize${this.stylizedCount}`].split(',');
+        if (this.stylizedObjects[`stylized${this.stylizedCount}`] && this.stylizedObjects[`stsize${this.stylizedCount}`]) {
+          const aData = this.stylizedObjects[`stylized${this.stylizedCount}`].split('|');
+          const size = this.stylizedObjects[`stsize${this.stylizedCount}`].split(',');
           const imgData = ctx.createImageData(size[0], size[1]);
           [canvas.width, canvas.height] = [size[0], size[1]];
           let j = 0;
@@ -527,6 +563,9 @@ export default {
     },
 
     submit() {
+      const blob = new Blob([JSON.stringify(this.stylizedObjects)], { type: 'text/plain' }, 'utf-8');
+      this.fileWriter.write(blob);
+      console.log(blob);
       this.updateFields({ stylizedCount: this.stylizedCount, stylizedResult: this.stylizedResult });
       this.$router.push({ name: 'Artist' });
     },
@@ -551,15 +590,62 @@ export default {
         }
       }
     },
+
+    preload() {
+      for (let i = 0; i < this.styleImgs.length; i += 1) {
+        const img = new Image();
+        img.src = this.styleImgs[i].src;
+      }
+      console.log('preloaded');
+      return true;
+    },
+
+    getLocalFile() {
+      window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+      navigator.webkitPersistentStorage.requestQuota(1024 * 1024 * 10, (grantedSize) => {
+        window.requestFileSystem(window.PERSISTENT, grantedSize, (fs) => {
+          this.filesystem = fs;
+          console.log('저장소 요청 성공');
+          this.filesystem.root.getFile('stylized.txt', { create: true, exclusive: false }, (fileEntry) => {
+            console.log(`파일의 절대경로: ${fileEntry.fullPath}`);
+            fileEntry.createWriter((fileWriter) => {
+              this.fileWriter = fileWriter;
+            });
+          });
+        }, (error) => {
+          console.log(error);
+        });
+      }, (error) => {
+        console.log(error);
+      });
+    },
+
+    getKeyByValue(arr, value) {
+      for (let i = 0; i < arr.length; i += 1) {
+        if (arr[i].id === value) {
+          return i;
+        }
+      }
+      return false;
+    },
   },
 };
 </script>
 
 <style lang="scss">
 .vue-select-image__thumbnail--selected {
-    background: rgb(255, 0, 0);
+  background: rgb(255, 0, 0);
 }
 .vue-select-image__item {
-    margin: 3px 3px !important;
+  margin: 3px 3px !important;
+}
+.v-input--radio-group__input {
+  justify-content: center;
+}
+.radio-label {
+  margin: 12px 7px -18px;
+  letter-spacing: 39px;
+  text-align: center;
+  padding-left: 14px;
 }
 </style>

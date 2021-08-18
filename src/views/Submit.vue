@@ -59,6 +59,8 @@ export default {
     isSubmitted: false,
     isSending: false,
     countDown: 5,
+    filesystem: null,
+    stylizedObjects: {},
   }),
 
   computed: {
@@ -73,9 +75,7 @@ export default {
 
   async mounted() {
     if (this.condition !== '1') {
-      for (let i = 1; i <= this.stylizedCount; i += 1) {
-        this.loadImg(i);
-      }
+      this.getLocalFile();
     }
     this.submitData();
     this.countDownTimer();
@@ -93,9 +93,9 @@ export default {
       const canvas = this.$el.querySelector(`#stylized${index}`);
       if (canvas.getContext) {
         const ctx = canvas.getContext('2d');
-        if (localStorage[`stylized${index}`] && localStorage[`stsize${index}`]) {
-          const aData = localStorage[`stylized${index}`].split('|');
-          const size = localStorage[`stsize${index}`].split(',');
+        if (this.stylizedObjects[`stylized${index}`] && this.stylizedObjects[`stsize${index}`]) {
+          const aData = this.stylizedObjects[`stylized${index}`].split('|');
+          const size = this.stylizedObjects[`stsize${index}`].split(',');
           const imgData = ctx.createImageData(size[0], size[1]);
           [canvas.width, canvas.height] = [size[0], size[1]];
           let j = 0;
@@ -146,6 +146,33 @@ export default {
           this.countDownTimer();
         }, 1000);
       }
+    },
+
+    getLocalFile() {
+      window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+      navigator.webkitPersistentStorage.requestQuota(1024 * 1024 * 10, (grantedSize) => {
+        window.requestFileSystem(window.PERSISTENT, grantedSize, (fs) => {
+          this.filesystem = fs;
+          console.log('저장소 요청 성공');
+          this.filesystem.root.getFile('stylized.txt', {}, (fileEntry) => {
+            console.log(`파일 열기 성공: ${fileEntry.fullPath}`);
+            fileEntry.file((file) => {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                this.stylizedObjects = JSON.parse(reader.result);
+                for (let i = 1; i <= this.stylizedCount; i += 1) {
+                  this.loadImg(i);
+                }
+              };
+              reader.readAsText(file, 'utf-8');
+            });
+          });
+        }, (error) => {
+          console.log(error);
+        });
+      }, (error) => {
+        console.log(error);
+      });
     },
   },
 };

@@ -16,16 +16,16 @@
         </v-card-title>
 
         <v-card-text>
-          <div class="px-2 py-6 body-1">
+          <div class="py-6 body-1">
             <ul>
               <li>
-                지금부터 무하의 작품 15개를 감상하시게 될 예정입니다.
+                지금부터 알폰스 무하의 작품 15개를 감상하시게 될 예정입니다.
               </li>
               <li>
-                작품 명과 제작년도만 표시되어 있습니다.
+                작품의 우측에 작품 명과 제작년도만 표시되어 있습니다.
               </li>
               <li>
-                편안하게 보이는 대로, 떠오르는 대로 자유롭게 작품을 감상해주시면 됩니다.
+                편안하고 자유롭게 작품을 감상해주시면 됩니다.
               </li>
               <li>
                 작품을 모두 감상하시면 다음 버튼이 활성화됩니다.
@@ -142,7 +142,7 @@ export default {
     },
 
     disabled() {
-      return this.countDown > 0 || this.watched.filter((item) => item === true).length !== 15;
+      return this.countDown > 0 || this.watchCount !== 0;
     },
 
     watchCount() {
@@ -151,8 +151,10 @@ export default {
   },
 
   mounted() {
+    this.preload();
     this.countDownTimer();
     this.watched = Array.from({ length: 15 }, () => false);
+    this.watched[0] = true;
   },
 
   methods: {
@@ -177,6 +179,15 @@ export default {
       this.watched[num] = true;
       this.watched = this.watched.slice(0);
       [this.text1, this.text2] = [this.imgs[num].split('.')[0].split(',').slice(1, -1).join(', '), this.imgs[num].split('.')[0].split(',')[this.imgs[num].split('.')[0].split(',').length - 1]];
+    },
+
+    preload() {
+      for (let i = 0; i < this.imgs.length; i += 1) {
+        const img = new Image();
+        img.src = this.imgs[i];
+      }
+      console.log('preloaded');
+      return true;
     },
   },
 };

@@ -20,7 +20,7 @@
             <div style="text-align: center;">
               <img
                 :src="getSrc"
-                height="300"
+                height="450"
               />
             </div>
             <br />
@@ -62,10 +62,10 @@
       <v-btn
         style="width: 25%"
         color="primary"
-        :disabled="watched < 6"
+        :disabled="watched < 2"
         @click="submit"
       >
-        다음 {{ 6 > watched ? `(남은 작품 수 : ${6 - watched})` : '' }}
+        다음
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -230,7 +230,8 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
+    await this.preload();
     this.countUpTimer();
     this.countDownTimer();
   },
@@ -279,6 +280,15 @@ export default {
         }
       }
       return false;
+    },
+
+    preload() {
+      for (let i = 0; i < this.artImgs.length; i += 1) {
+        const img = new Image();
+        img.src = this.artImgs[i].src;
+      }
+      console.log('preloaded');
+      return true;
     },
   },
 };
