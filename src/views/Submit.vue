@@ -52,7 +52,7 @@
 
 <script>
 /* eslint-disable import/no-unresolved */
-import axios from 'axios';
+// import axios from 'axios';
 
 export default {
   data: () => ({
@@ -116,12 +116,7 @@ export default {
       const data = this.$store.getters.getSubmitData;
       console.log(data, this.$store);
       try {
-        const url = '';
-        const response = await axios.post(
-          url,
-          data,
-        );
-        console.log(response);
+        await this.$firebase.database().ref(`response/${this.$store.state.data.participantID}`).set(data);
       } catch (err) {
         console.log(err);
       } finally {
