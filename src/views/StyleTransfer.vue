@@ -164,7 +164,6 @@
               rounded
               color="pink"
               class="ma-2 white--text"
-              :disabled="uploadDisabled"
               @click="dialog = true; dialog1 = true"
             >
               Upload
@@ -307,7 +306,6 @@ export default {
     modelLoading: false,
     selectedOption1: null,
     selectedOption2: null,
-    uploadDisabled: false,
     styleNet: null,
     transformNet: null,
     styleImg: null,
@@ -492,10 +490,7 @@ export default {
     },
 
     onSelectFile(file) {
-      if (this.contentImgs.length > 3) {
-        // eslint-disable-next-line no-alert
-        alert('더이상 업로드 할 수 없습니다.');
-      } else if (file) {
+      if (file) {
         this.file = file;
         this.setImage();
       }
@@ -510,11 +505,6 @@ export default {
           src: fileReader.result,
           alt: 'contentImg',
         });
-        if (this.contentImgs.length > 2) {
-          this.dialog1 = false;
-          this.dialog = false;
-          this.uploadDisabled = true;
-        }
       };
     },
 

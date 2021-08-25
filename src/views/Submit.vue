@@ -128,8 +128,10 @@ export default {
       let url = '';
       if (this.condition === '1') {
         url = 'https://forms.gle/a4UBA7uCvuMuMyay8';
-      } else if (this.condition === '2' || this.condition === '3') {
+      } else if (this.condition === '2') {
         url = 'https://forms.gle/qMFoztNUbAJovh417';
+      } else if (this.condition === '3') {
+        url = 'https://forms.gle/W4Dcjb5ndfjKZrbZA';
       }
       window.open(url);
     },
