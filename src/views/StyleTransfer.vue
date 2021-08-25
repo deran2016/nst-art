@@ -57,10 +57,7 @@
               <p>업로드 버튼을 눌러 선택한 스타일 이미지를 적용할 사진을 업로드해주세요</p>
               <p><b>사진을 3장 업로드해야 진행이 가능합니다.</b></p>
               <p>
-                #업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제합니다.
-                모두 로컬(사용하시는 컴퓨터)에서 불러오기만 합니다. 명화 스타일 적용에 필요한
-                AI연산 역시 실험 서버가 아닌 구글 코랩에서 안전하게 이루어지기 때문에 사진
-                유출 위험이 없어 편안하게 사용하시면 됩니다.
+                #업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제됩니다.
               </p>
               <p>업로드를 동일한 방법으로 3회 진행하신 뒤 닫기를 눌러주시면 바로 바로 업로드된 사진을 사용하실 수 있습니다.</p>
             </div>
@@ -99,13 +96,13 @@
             </div>
             <div class="mx-16 px-16 py-6 body-1 text-center">
               <p>
-                명화 스타일 옮기기가 완료되었습니다.<br />
-                완성된 결과물과 작품을 비교해 보면서 아래 질문에 대해 답변해주세요.<br /><br />
+                카이(CAAI) 실행이 완료되었습니다!<br />
+                완성된 결과물과 무하의 작품을 비교해 보면서 아래 질문에 대해 답변해주세요.<br /><br />
                 (1: 전혀 아니다 ~ 7: 매우 그렇다)
               </p>
             </div>
             <div class="mx-16 px-16 body-1">
-              1. 해당 명화의 스타일이 주는 느낌이 결과물에도 잘 나타나있다고 생각한다.
+              1. 무하 화풍이 잘 이해간다.
               <p class="radio-label">
                 1234567
               </p>
@@ -158,7 +155,7 @@
 
       <v-card-text>
         <div class="px-8 mb-5 title">
-          1. 사진 선택
+          1단계: 스타일을 적용할 사진을 골라주세요
           <div
             v-if="condition !== '2'"
             style="display: inline"
@@ -167,6 +164,7 @@
               rounded
               color="pink"
               class="ma-2 white--text"
+              :disabled="uploadDisabled"
               @click="dialog = true; dialog1 = true"
             >
               Upload
@@ -202,7 +200,7 @@
         <v-divider />
 
         <div class="px-8 py-2 mb-5 title">
-          2. 명화 선택
+          2단계: 어떤 작품의 스타일을 적용할지 선택해주세요
         </div>
 
         <div class="text-center body-1">
@@ -219,19 +217,19 @@
         <v-btn
           rounded
           outlined
-          block
+          style="width: 30%; margin: 0 auto; text-transform: none"
           color="primary"
           :disabled="!enableStylize || stylizing || contentImgs.length < 3"
           :loading="stylizing"
           @click="startStyling"
         >
-          Stylize
+          카이(Create Art with AI) 실행!
           <template v-slot:loader>
             <v-progress-circular
               indeterminate
               color="primary"
             />
-            <span>대략 15초 이내의 시간이 소요됩니다.</span>
+            <span>카이가 스타일을 적용시키고 있어요 (10초 이내의 시간이 소요됩니다!)</span>
           </template>
         </v-btn>
       </v-card-actions>
@@ -239,7 +237,7 @@
       <v-card-text>
         <v-divider />
         <div class="px-8 py-2 mb-5 title">
-          3. 완성
+          내가 만든 무하 갤러리
         </div>
         <div class="px-8 py-2 body-1">
           <canvas
@@ -267,13 +265,16 @@
         :value="overlay"
         :absolute="true"
       >
+        <img
+          :src="require(`@/assets/img/가이드 - 컨디션${condition}.jpg`)"
+          width="1000px"
+        />
         <v-btn
-          color="success"
+          color="gray"
           @click="overlay = false"
         >
           X
         </v-btn>
-        <p>test</p>
       </v-overlay>
     </div>
   </v-card>
@@ -306,6 +307,7 @@ export default {
     modelLoading: false,
     selectedOption1: null,
     selectedOption2: null,
+    uploadDisabled: false,
     styleNet: null,
     transformNet: null,
     styleImg: null,
@@ -321,11 +323,11 @@ export default {
     filewriter: null,
     styleImgs: [{
       id: 'img1',
-      src: require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898.jpg'),
+      src: require('@/assets/img/1, 지스몽다(Gismonda), 1895.jpg'),
       alt: 'img1',
     }, {
       id: 'img2',
-      src: require('@/assets/img/2, 지스몽다(Gismonda), 1895.jpg'),
+      src: require('@/assets/img/2, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898.jpg'),
       alt: 'img2',
     }, {
       id: 'img3',
@@ -490,7 +492,10 @@ export default {
     },
 
     onSelectFile(file) {
-      if (file) {
+      if (this.contentImgs.length > 3) {
+        // eslint-disable-next-line no-alert
+        alert('더이상 업로드 할 수 없습니다.');
+      } else if (file) {
         this.file = file;
         this.setImage();
       }
@@ -505,6 +510,11 @@ export default {
           src: fileReader.result,
           alt: 'contentImg',
         });
+        if (this.contentImgs.length > 2) {
+          this.dialog1 = false;
+          this.dialog = false;
+          this.uploadDisabled = true;
+        }
       };
     },
 

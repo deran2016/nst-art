@@ -118,8 +118,8 @@ export default {
     text1: '',
     text2: '',
     imgs: [
-      require('@/assets/img/1, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898.jpg'),
-      require('@/assets/img/2, 지스몽다(Gismonda), 1895.jpg'),
+      require('@/assets/img/1, 지스몽다(Gismonda), 1895.jpg'),
+      require('@/assets/img/2, 카르티에 라탱 표지(Au Quartier Latin Cover), 1898.jpg'),
       require('@/assets/img/3, 토스카(La Tosca), 1899.jpg'),
       require('@/assets/img/4, 제20회 살롱 데 상 전시회 포스터(Salon of the Hundred), 1896.jpg'),
       require('@/assets/img/5, 사계_가을(The Seasons series_Autumn), 1896.jpg'),
