@@ -60,6 +60,13 @@
                 #업로드하신 이미지는 별도로 보관하지 않으며 실험이 완료되는 즉시 삭제됩니다.
               </p>
               <p>업로드를 동일한 방법으로 3회 진행하신 뒤 닫기를 눌러주시면 바로 바로 업로드된 사진을 사용하실 수 있습니다.</p>
+              <p
+                style="color: red;"
+              >
+                <b>
+                  업로드 하신 후 사용을 원하는 사진을 클릭해주세요.
+                </b>
+              </p>
             </div>
           </v-card-text>
 
@@ -102,7 +109,7 @@
               </p>
             </div>
             <div class="mx-16 px-16 body-1">
-              1. 무하 화풍이 잘 이해간다.
+              1. 무하 그림에 더 관심이 간다.
               <p class="radio-label">
                 1234567
               </p>
@@ -249,14 +256,16 @@
         </div>
       </v-card-text>
 
-      <v-card-actions>
+      <v-card-actions
+        style="flex-direction: row-reverse"
+      >
         <v-btn
-          block
+          style="width: 20%"
           color="primary"
           :disabled="!stylizedCount"
           @click="submit"
         >
-          다음
+          카이 활동 마치고 넘어가기
         </v-btn>
       </v-card-actions>
 
